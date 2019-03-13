@@ -1704,7 +1704,12 @@ function loadReplyLink( $, mw ) {
                 // Event listener for the "Preview" button
                 document.getElementById( "reply-link-preview-button" )
                     .addEventListener( "click", function () {
-                        var sanitizedCode = encodeURIComponent( document.getElementById( "reply-dialog-field" ).value );
+                        var reply = document.getElementById( "reply-dialog-field" ).value;
+                        if( !hasSig( reply ) ) {
+                            reply += " " + ( window.replyLinkSigPrefix ?
+                                window.replyLinkSigPrefix : "" ) + LITERAL_SIGNATURE;
+                        }
+                        var sanitizedCode = encodeURIComponent( reply );
                         $.post( "https:" + mw.config.get( "wgServer" ) +
                             "/api/rest_v1/transform/wikitext/to/html/" + encodeURIComponent( currentPageName ),
                             "wikitext=" + sanitizedCode + "&body_only=true",
